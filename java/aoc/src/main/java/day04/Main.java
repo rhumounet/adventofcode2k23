@@ -1,14 +1,13 @@
 package day04;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import utils.FileUtils;
 
 public class Main {
 
@@ -18,14 +17,8 @@ public class Main {
 	}
 
 	public static String part1() throws FileNotFoundException {
+		var lines = FileUtils.LoadFile("day04/day04.txt");
 		int sum = 0;
-		Scanner scanner = new Scanner(new File("day04/day04.txt"));
-		scanner.useDelimiter("\n");
-		List<String> lines = new ArrayList<>();
-		while (scanner.hasNext()) {
-			lines.add(scanner.next());
-		}
-		scanner.close();
 		for (String line : lines) {
 			var parts = line.split(":")[1].split("\\|");
 			List<Integer> winning = Arrays.asList(parts[0].split(" "))
@@ -56,20 +49,13 @@ public class Main {
 	}
 
 	public static String part2() throws FileNotFoundException {
-		Scanner scanner = new Scanner(new File("day04/day04.txt"));
-		scanner.useDelimiter("\n");
-		List<String> lines = new ArrayList<>();
-		while (scanner.hasNext()) {
-			lines.add(scanner.next());
-		}
-		scanner.close();
-		var array = lines.toArray(new String[lines.size()]);
+		var lines = FileUtils.LoadFile("day04/day04.txt");
 		Hashtable<Integer, Integer> sums = new Hashtable<>();
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 0; i < lines.length; i++) {
 			sums.put(i, 1);
 		}
-		for (int i = 0; i < array.length; i++) {
-			var line = array[i];
+		for (int i = 0; i < lines.length; i++) {
+			var line = lines[i];
 
 			var parts = line.split(":")[1].split("\\|");
 			List<Integer> winning = Arrays.asList(parts[0].split(" "))

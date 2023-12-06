@@ -8,6 +8,14 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
+            "mainClass": "day05.Main",
+            "projectName": "java_bc453875",
+            "cwd": "${workspaceFolder}/aoc/src/main/java"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
             "mainClass": "day04.Main",
             "projectName": "java_bc453875"
         },
@@ -15,7 +23,8 @@
             "type": "java",
             "name": "Current File",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "${file}",
+            "cwd": "${workspaceFolder}"
         },
         {
             "type": "java",
