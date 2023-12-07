@@ -4,7 +4,7 @@ public static partial class Day03
 {
     public static string Part1()
     {
-        using var reader = new StreamReader("Day_03/input.txt");
+        using var reader = new StreamReader("Day03/input.txt");
         var lines = reader.ReadToEnd();
         var regex = new Regex(@$"(\d+)+", RegexOptions.Multiline);
         var lineNumber = 0;
@@ -39,7 +39,7 @@ public static partial class Day03
 
     public static string Part2()
     {
-        using var reader = new StreamReader("Day_03/input.txt");
+        using var reader = new StreamReader("Day03/input.txt");
         var lines = reader.ReadToEnd();
         var regex = Numeral();
         var lineNumber = 0;
