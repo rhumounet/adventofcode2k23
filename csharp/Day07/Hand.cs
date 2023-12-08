@@ -66,7 +66,7 @@ class Hand : IComparable<Hand>
             return HandType.FiveOfKind;
         if (each.Any(g => g.Count() == 4))
             return HandType.FourOfKind;
-        if (each.Count == 2 && each.Any(g => g.Count() == 3))
+        if (each.Count == 2)
             return HandType.FullHouse;
         if (each.Any(g => g.Count() == 3))
             return HandType.ThreeOfKind;
