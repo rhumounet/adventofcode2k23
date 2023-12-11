@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class FileUtils {
     public static String[] LoadFile(String path) throws FileNotFoundException {
 		Scanner scanner = new Scanner(new File(path));
-		scanner.useDelimiter("\n");
+		scanner.useDelimiter("\r\n");
 		List<String> lines = new ArrayList<>();
 		while (scanner.hasNext()) {
 			lines.add(scanner.next());

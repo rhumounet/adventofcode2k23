@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "day05.Main",
+            "mainClass": "day11.Main",
             "projectName": "java_bc453875",
             "cwd": "${workspaceFolder}/aoc/src/main/java"
         },

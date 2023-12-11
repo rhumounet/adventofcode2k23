@@ -1,6 +1,7 @@
 import regex as re
 import math
 import numpy
+from PIL import Image as im
 
 with open("day_10/input.txt", "r") as f:
     content = f.read()
@@ -18,17 +19,51 @@ def part1():
     [firstDir, secondDir] = dir
     #get next pipes
     dist = 1
-    totalPoints = [['0' for x in range(len(lines[0]))] for y in range(len(lines))]
     while first[0] != second[0] or first[1] != second[1]:
         #first way
         firstDir, first = getNext(firstDir, first)
         #second way
         secondDir, second = getNext(secondDir, second)
-        totalPoints[first[1]][first[0]] = f'{lines[first[1]][first[0]]}'
-        totalPoints[second[1]][second[0]] = f'{lines[second[1]][second[0]]}'
         dist += 1
-    numpy.savetxt("test.csv", totalPoints, fmt='%s', encoding='UTF8')
     return dist
+
+def part2():
+    
+    match = re.search(r"S", content)
+    y0 = math.ceil(match.regs[0][0]/len(lines[0])) - 1
+    starting = lines[y0]
+    x0 = starting.index("S")
+    #assert which piece is starting point
+    dir, first, second = getInitialPipe(x0, y0)
+    [firstDir, secondDir] = dir
+    #get next pipes
+    dist = 1
+    totalPointsA = []
+    totalPointsB = []
+    while first[0] != second[0] or first[1] != second[1]:
+        #first way
+        firstDir, first = getNext(firstDir, first)
+        #second way
+        secondDir, second = getNext(secondDir, second)
+        #shapely
+        # firstPoint = Point(first[0], first[1])
+        # secondPoint = Point(second[0], second[1])
+        totalPointsA.append(first)
+        totalPointsB.append(second)
+        dist += 1
+    totalPointsB.reverse()
+    newArray = totalPointsA + totalPointsB
+    realArray = numpy.full(len(lines[0]) * len(lines), fill_value=0, dtype=numpy.uint8)
+    realArray = numpy.reshape(realArray, (len(lines), len(lines[0])))
+    for (x1, y1) in newArray:
+        realArray[y1][x1] = 255
+    data = im.fromarray(realArray)
+    data.save('test.png')
+    # isolated = 0
+    # for x in range(len(lines[0])):
+    #     for y in range(len(lines)):
+    #         isolated += 1
+    return ''
 
 def getInitialPipe(x: int, y: int):
     adj = [
@@ -108,4 +143,5 @@ def orientation(char: str):
         case _:
             return 'XX'
     
-print(part1())
+# print(part1())
+print(part2())
