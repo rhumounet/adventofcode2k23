@@ -42,7 +42,7 @@ public class Main {
 		var rows = warp.rows;
 		var columns = warp.columns;
 		var galaxies = new ArrayList<Galaxy>();
-		long expansion = 10;
+		long expansion = 999999;
 		for (int i = 0; i < lines.length; i++) {
 			for (int j = 0; j < lines[i].length(); j++) {
 				if (lines[i].charAt(j) == '#') {
