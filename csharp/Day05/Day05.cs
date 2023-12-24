@@ -57,15 +57,15 @@
             this.length = length;
         }
 
-        public (Range dest_intersection, Range src_intersection, Range[] rest) Intersection(Range other)
-        {
-            Range dest_intersection, src_intersection;
-            Range[] rest;
-            if (min_dest < other.max_source|| max_dest > other.min_source)
-            {
-                dest_intersection = new Range(Math.Max(min_dest, other.min_source), Math.Min(max_dest, other.max_source));
-            }
-        }
+        //public (Range dest_intersection, Range src_intersection, Range[] rest) Intersection(Range other)
+        //{
+        //    Range dest_intersection, src_intersection;
+        //    Range[] rest;
+        //    if (min_dest < other.max_source|| max_dest > other.min_source)
+        //    {
+        //        dest_intersection = new Range(Math.Max(min_dest, other.min_source), Math.Min(max_dest, other.max_source));
+        //    }
+        //}
     }
 
 }
