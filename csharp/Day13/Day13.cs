@@ -25,55 +25,122 @@ public static class Day13
             }
             var (vIndex, vCount) = CheckReflections(vertical);
             if (hCount >= vCount)
+            {
                 total += 100 * hIndex;
+            }
             else if (vCount >= hCount)
+            {
                 total += vIndex;
+            }
         }
         return $"{total}";
     }
 
-    private static (int, int) CheckReflections(string[]? pattern)
+    public static string Part2()
+    {
+        var content = FileHelper.GetContent("Day13/input.txt");
+        var patterns = content.Split("\r\n\r\n");
+        long total = 0;
+        foreach (var (pattern, index) in patterns.Select((s, i) => (s, i)))
+        {
+            var horizontal = pattern.Split("\r\n");
+            var (hIndex, hCount) = CheckReflections(horizontal, true);
+            //transform horizontal to vertical to ease treatments
+            var vertical = new string[horizontal[0].Length];
+            for (int x = 0; x < horizontal[0].Length; x++)
+            {
+                var temp = "";
+                for (int y = 0; y < horizontal.Length; y++)
+                {
+                    temp += horizontal[y][x];
+                }
+                vertical[x] = temp;
+            }
+            var (vIndex, vCount) = CheckReflections(vertical, true);
+            if (hCount >= vCount)
+            {
+                total += 100 * hIndex;
+            }
+            else if (vCount >= hCount)
+            {
+                total += vIndex;
+            }
+        }
+        return $"{total}";
+    }
+
+    private static (int, int) CheckReflections(string[]? pattern, bool fix = false)
     {
         if (pattern != null)
         {
-            var group = pattern
-                .Select((s, i) => (s, i))
-                .GroupBy(g => g.s);
-            var bounds = group
-                .FirstOrDefault(g => g.Count() > 1 && g.Any(g => g.i == 0 || g.i == pattern.Length - 1));
-            if (bounds != null)
+            var reflectionStarts = new List<(int l, int r)>();
+            var temp = pattern[0];
+            if (fix)
             {
-                (string s, int i) firstBound = default, lastBound = default;
-                var list = bounds.ToList();
-                if (bounds.Count() % 2 != 0) //casse les couilles les cas à la con putain de chiasse
+                for (int i = 0; i < pattern.Length - 1; i++)
                 {
-                    for (int i = 0; i < list.Count; i++)
+                    for (int j = i + 1; j < pattern.Length; j++)
                     {
-                        var current = list[i];
-                        for (int j = i + 1; j < list.Count; j++)
+                        var left = pattern[i];
+                        var right = pattern[j];
+                        if (left.Length == right.Length)
                         {
-                            if ((((current.i + list[j].i) + 1) / 2) % 2 == 0)
+                            List<int> indexes = new List<int>();
+                            for (int k = 0; k < left.Length; k++)
                             {
-                                firstBound = current;
-                                lastBound = list[j];
-                                break;
+                                if (left[k] != right[k]) indexes.Add(k);
+                            }
+                            if (indexes.Count == 1)
+                            {
+                                var newValue = pattern[j];
+                                newValue.Remove(indexes[0]);
+                                newValue.Insert(indexes[0], pattern[i][indexes[0]].ToString());
+                                pattern[j] = newValue;
                             }
                         }
-                        if (firstBound != default && lastBound != default)
+                    }
+                }
+            }
+            for (int i = 1; i < pattern.Length; i++)
+            {
+                if (temp == pattern[i])
+                {
+                    reflectionStarts.Add((l: i - 1, r: i));
+                }
+                else temp = pattern[i];
+            }
+            foreach (var reflectionStart in reflectionStarts)
+            {
+                var keepGoing = true;
+                var isReflecting = true;
+                var offset = 1;
+                while (keepGoing)
+                {
+                    if (reflectionStart.l - offset >= 0 && reflectionStart.r + offset < pattern.Length)
+                    {
+                        if (pattern[reflectionStart.l - offset] != pattern[reflectionStart.r + offset])
                         {
-                            break;
+                            keepGoing = false;
+                            isReflecting = false;
+                        }
+                        else
+                        {
+                            //J'aime les patates
+                            offset++;
+                            keepGoing = reflectionStart.l - offset >= 0 && reflectionStart.r + offset < pattern.Length;
                         }
                     }
-                } else
-                {
-                    firstBound = bounds.FirstOrDefault();
-                    lastBound = bounds.LastOrDefault();
+                    else
+                    {
+                        keepGoing = false;
+                    }
                 }
-                var reflecting = group.Where(g => g.Count() > 1 && g.FirstOrDefault().i >= firstBound.i && g.LastOrDefault().i <= lastBound.i).SelectMany(g => g).Count();
-                int reflectLine = (firstBound.i + lastBound.i + 1) / 2;
-                return (reflectLine, reflecting);
+                if (isReflecting)
+                {
+                    return (reflectionStart.r, offset);
+                }
             }
         }
-        return (0, 0);
+        return (-1, -1);
     }
 }

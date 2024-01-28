@@ -9,4 +9,8 @@
 //Console.WriteLine(Day12.Part1_BRUTEFORCE());
 //Console.WriteLine(Day12.Part2_BRUTEFORCEAUSSI());
 
-Console.WriteLine(Day13.Part1());
+//Console.WriteLine(Day13.Part1());
+//Console.WriteLine(Day13.Part2());
+
+Console.WriteLine(Day20.Part1());
+//Console.WriteLine(Day20.Part2());
