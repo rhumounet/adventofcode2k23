@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public static class Day20
 {
-    private static Queue<(Module? source, Module destination, Pulse pulse)>? _queue;
+    private static Queue<(Module source, Module destination, Pulse pulse)> _queue;
     public static string Part1()
     {
         using var reader = new StreamReader("Day20/input.txt");
@@ -35,21 +35,62 @@ public static class Day20
         if (broadcaster != null)
             for (int i = 0; i < 1000; i++)
             {
-                _queue = new Queue<(Module? source, Module destination, Pulse pulse)>();
+                _queue = new Queue<(Module source, Module destination, Pulse pulse)>();
                 _queue.Enqueue((null, broadcaster, Pulse.Low));
                 while (_queue.Count != 0)
                 {
                     var (source, destination, pulse) = _queue.Dequeue();
-                    //if (i < 10) Console.WriteLine($"{source?.ToString() ?? "button"} -{pulse}-> {destination}");
                     destination.Input = (source, pulse);
                     if (pulse == Pulse.Low)
                         lowCount++;
                     else
                         highCount++;
                 }
-                //if (i < 10) Console.WriteLine();
             }
         return $"{lowCount * highCount}";
+    }
+
+    public static string Part2()
+    {
+        using var reader = new StreamReader("Day20/input.txt");
+        var lines = reader.ReadToEnd().Split("\r\n");
+        var modules = new List<Module>();
+
+        foreach (var line in lines)
+        {
+            var parts = line.Split("->").Select(s => s.Trim()).ToList();
+            var name = parts[0];
+            var output = parts[1].Contains(',') ? [.. parts[1].Split(',').Select(s => s.Trim())] : new string[] { parts[1] };
+            modules.Add(ParseModule(name, output));
+        }
+
+        Module finalModule = null;
+        foreach (var module in modules)
+        {
+            module.Destination = modules.Where(m => module.RawDestination.Contains(m.Name)).ToArray();
+            if (module is ConjunctionModule)
+                (module as ConjunctionModule).Inputs = modules
+                    .Where(m => m.RawDestination.Contains(module.Name))
+                    .ToDictionary(m => m.Name, m => Pulse.Low);
+            if (module.Destination.Length == 0)
+            {
+                finalModule = new OutputModule { Name = module.RawDestination[0] };
+                module.Destination = [finalModule];
+            }
+        }
+        if (finalModule != null)
+            modules.Add(finalModule);
+
+        foreach (var source in modules)
+        {
+            foreach (var dest in source.Destination)
+            {
+                dest.Sources.Add(source);
+            }
+        }
+        var origin = modules.FirstOrDefault(m => m.Name == "rx");
+        
+        return "";
     }
 
     public static Module ParseModule(string name, string[] output)
@@ -70,15 +111,17 @@ public static class Day20
     public abstract class Module
     {
         public virtual string Name { get; set; }
-        public virtual (Module?, Pulse) Input { get; set; }
+        public virtual (Module, Pulse) Input { get; set; }
 
         public string[] RawDestination { get; set; }
         public Module[] Destination { get; set; }
+        public List<Module> Sources { get; set; }
         public Module()
         {
             Name = string.Empty;
             RawDestination = [];
             Destination = [];
+            Sources = [];
         }
         public override string ToString()
         {
@@ -90,7 +133,7 @@ public static class Day20
     {
         public OutputModule() : base()
         {
-            
+
         }
     }
 
@@ -98,7 +141,7 @@ public static class Day20
     {
         public BroadcastModule() : base() { }
         public override string Name => "broadcaster";
-        public override (Module?, Pulse) Input
+        public override (Module, Pulse) Input
         {
             set
             {
@@ -114,7 +157,7 @@ public static class Day20
     {
         public Dictionary<string, Pulse> Inputs { get; set; } = [];
         public ConjunctionModule() : base() { }
-        public override (Module?, Pulse) Input
+        public override (Module, Pulse) Input
         {
             set
             {
@@ -137,7 +180,7 @@ public static class Day20
     {
         public bool State { get; set; } = false;
         public FlipFlopModule() : base() { }
-        public override (Module?, Pulse) Input
+        public override (Module, Pulse) Input
         {
             set
             {

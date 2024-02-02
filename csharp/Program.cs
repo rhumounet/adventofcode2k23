@@ -12,5 +12,5 @@
 //Console.WriteLine(Day13.Part1());
 //Console.WriteLine(Day13.Part2());
 
-Console.WriteLine(Day20.Part1());
-//Console.WriteLine(Day20.Part2());
+//Console.WriteLine(Day20.Part1());
+Console.WriteLine(Day20.Part2());
